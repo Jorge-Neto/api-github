@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Profile from './Profile';
 import Filter from './Filter';
@@ -8,6 +8,8 @@ import { getLangsFrom } from '../../services/api';
 import { Container, Sidebar, Main } from './styles';
 
 const RepositoriesPage = () => {
+  const [currentLanguage, setCurrentLanguage] = useState('');
+
   const user = {
     login: 'Jorge-Neto',
     name: 'Jorge Neto',
@@ -21,6 +23,7 @@ const RepositoriesPage = () => {
 
   const repositories = [
     {
+      id: '1',
       name: 'alurakut',
       description:
         'Repositório criado durante as aulas de imersão react da Alura.',
@@ -28,12 +31,14 @@ const RepositoriesPage = () => {
       language: 'JavaScript',
     },
     {
+      id: '2',
       name: 'api-github',
       description: 'React app that queries Github API and returns data',
       html_url: 'https://github.com/Jorge-Neto/api-github',
       language: 'Java',
     },
     {
+      id: '3',
       name: 'Calculadora-Basica',
       description:
         'Projeto criado para desenvolver meus conhecimentos em Javascript, Html e CSS',
@@ -44,14 +49,25 @@ const RepositoriesPage = () => {
 
   const languages = getLangsFrom(repositories);
 
+  const onFilterClick = (language) => {
+    setCurrentLanguage(language);
+  };
+
   return (
     <Container>
       <Sidebar>
         <Profile user={user} />
-        <Filter languages={languages} />
+        <Filter
+          languages={languages}
+          currentLanguage={currentLanguage}
+          onClick={onFilterClick}
+        />
       </Sidebar>
       <Main>
-        <Repositories />
+        <Repositories
+          repositories={repositories}
+          currentLanguage={currentLanguage}
+        />
       </Main>
     </Container>
   );
