@@ -1,4 +1,4 @@
-#API GITHUB with React
+# API GITHUB with React
 
 > This project was created during the course "Mastering React Js", by Dev Samurai.
 
