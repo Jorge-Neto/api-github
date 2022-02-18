@@ -1,57 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useParams } from 'react-router-dom';
 
 import Profile from './Profile';
 import Filter from './Filter';
 import Repositories from './Repositories';
-import { getLangsFrom } from '../../services/api';
+import { getUser, getRepos, getLangsFrom } from '../../services/api';
 
-import { Container, Sidebar, Main } from './styles';
+import { Loading, Container, Sidebar, Main } from './styles';
 
 const RepositoriesPage = () => {
-  const [currentLanguage, setCurrentLanguage] = useState('');
+  const { login } = useParams();
+  const [user, setUser] = useState();
+  const [repositories, setRepositories] = useState();
+  const [currentLanguage, setCurrentLanguage] = useState();
+  const [languages, setLanguages] = useState();
+  const [loading, setLoading] = useState(true);
 
-  const user = {
-    login: 'Jorge-Neto',
-    name: 'Jorge Neto',
-    avatar_url: 'https://avatars.githubusercontent.com/u/53627696?v=4',
-    followers: 0,
-    following: 0,
-    company: 'Grupo Mirum',
-    blog: 'linkedin.com/in/jorge-neto-a8557b190',
-    location: 'Curitiba - PR',
-  };
+  useEffect(() => {
+    const loadData = async () => {
+      const [userResponse, repositoriesResponse] = await Promise.all([
+        getUser(login),
+        getRepos(login),
+      ]);
 
-  const repositories = [
-    {
-      id: '1',
-      name: 'alurakut',
-      description:
-        'Repositório criado durante as aulas de imersão react da Alura.',
-      html_url: 'https://github.com/Jorge-Neto/alurakut',
-      language: 'JavaScript',
-    },
-    {
-      id: '2',
-      name: 'api-github',
-      description: 'React app that queries Github API and returns data',
-      html_url: 'https://github.com/Jorge-Neto/api-github',
-      language: 'Java',
-    },
-    {
-      id: '3',
-      name: 'Calculadora-Basica',
-      description:
-        'Projeto criado para desenvolver meus conhecimentos em Javascript, Html e CSS',
-      html_url: 'https://github.com/Jorge-Neto/Calculadora-Basica',
-      language: 'HTML',
-    },
-  ];
+      setUser(userResponse.data);
+      setRepositories(repositoriesResponse.data);
+      setLanguages(getLangsFrom(repositoriesResponse.data));
 
-  const languages = getLangsFrom(repositories);
+      setLoading(false);
+    };
+
+    loadData();
+  }, []);
 
   const onFilterClick = (language) => {
     setCurrentLanguage(language);
   };
+
+  if (loading) {
+    return <Loading>Carregando...</Loading>;
+  }
 
   return (
     <Container>

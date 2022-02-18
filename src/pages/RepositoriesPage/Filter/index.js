@@ -22,7 +22,7 @@ const Filter = ({ languages, currentLanguage, onClick }) => {
   return (
     <Container>
       {selectors}
-      <Cleaner onClick={() => onClick && onClick('undefined')}>
+      <Cleaner onClick={() => onClick && onClick(undefined)}>
         <MdClear />
         Limpar
       </Cleaner>
